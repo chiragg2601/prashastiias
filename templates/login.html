@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Login | Prashasti IAS Academy{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-header">
+    <div class="auth-mark">अ</div>
+    <h1>Welcome Back</h1>
+    <p>Login to access your study material and dashboard</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('login') }}">
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="••••••••" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+  </form>
+
+  <div class="auth-footer">
+    <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+  </div>
+</div>
+{% endblock %}

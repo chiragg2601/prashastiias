@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Students | Admin{% endblock %}
+
+{% block content %}
+<div class="page-head" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+  <div>
+    <p class="eyebrow">Admin Panel</p>
+    <h1>Registered Students</h1>
+    <p>Academy mein registered sabhi students ki list aur profile management.</p>
+  </div>
+  <a href="{{ url_for('export_students') }}" class="btn btn-primary">⬇ Export to Excel</a>
+</div>
+
+<div class="admin-table-wrap">
+  <div class="table-wrap-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Course</th>
+          <th>Batch</th>
+          <th>Fees Status</th>
+          <th>Joined On</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+          <tr>
+            <td><strong>{{ s.name }}</strong></td>
+            <td>{{ s.email }}</td>
+            <td>{{ s.phone or '-' }}</td>
+            <td>{{ s.course or '-' }}</td>
+            <td>{{ s.batch or '-' }}</td>
+            <td>
+              {% if s.fees_status == 'Paid' %}
+                <span class="badge badge-file">Paid</span>
+              {% elif s.fees_status == 'Pending' %}
+                <span class="badge badge-link">Pending</span>
+              {% else %}
+                {{ s.fees_status or '-' }}
+              {% endif %}
+            </td>
+            <td>{{ s.created_at | fmtdate('%d %b %Y') }}</td>
+            <td>
+              <a href="{{ url_for('edit_student', student_id=s.id) }}" class="btn btn-outline-sm" style="border-color: var(--color-maroon); color: var(--color-maroon); padding: 6px 16px; font-size:0.8rem;">Edit Profile</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" style="text-align:center; color: var(--color-muted);">Abhi tak koi student registered nahi hai.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

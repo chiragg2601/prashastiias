@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}All Feedback | Admin{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow">Admin Panel</p>
+  <h1>Student Feedback</h1>
+  <p>Sabhi students dwara diya gaya feedback yahan dekhein.</p>
+</div>
+
+<div class="admin-table-wrap">
+  <div class="table-wrap-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Subject</th>
+          <th>Rating</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fb in feedbacks %}
+          <tr>
+            <td><strong>{{ fb.user_name }}</strong><br><span style="color:var(--color-muted); font-size:0.82rem;">{{ fb.user_email }}</span></td>
+            <td>{{ fb.subject or 'General' }}</td>
+            <td><span class="fb-rating">{{ fb.rating or '-' }}★</span></td>
+            <td>{{ fb.message }}</td>
+            <td>{{ fb.created_at | fmtdate }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" style="text-align:center; color: var(--color-muted);">Abhi tak koi feedback nahi mila hai.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

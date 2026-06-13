@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Enquiries | Admin{% endblock %}
+
+{% block content %}
+<div class="page-head" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+  <div>
+    <p class="eyebrow">Admin Panel</p>
+    <h1>Website Enquiries</h1>
+    <p>Homepage popup aur contact form se aaye sabhi enquiries.</p>
+  </div>
+  <a href="{{ url_for('export_enquiries') }}" class="btn btn-primary">⬇ Export to Excel</a>
+</div>
+
+<div class="admin-table-wrap">
+  <div class="table-wrap-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Course</th>
+          <th>Message</th>
+          <th>Source</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in enquiries %}
+          <tr>
+            <td><strong>{{ e.name }}</strong></td>
+            <td><a href="tel:{{ e.phone }}" style="color: var(--color-maroon); font-weight:600;">{{ e.phone }}</a></td>
+            <td>{{ e.email or '-' }}</td>
+            <td>{{ e.course or '-' }}</td>
+            <td>{{ e.message or '-' }}</td>
+            <td>
+              {% if e.source == 'popup' %}
+                <span class="badge badge-link">Popup</span>
+              {% else %}
+                <span class="badge badge-file">Contact Form</span>
+              {% endif %}
+            </td>
+            <td>{{ e.created_at | fmtdate }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('delete_enquiry', enquiry_id=e.id) }}" class="confirm-delete" style="display:inline;">
+                <button type="submit" class="btn btn-danger" style="padding: 6px 16px; font-size:0.8rem;">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" style="text-align:center; color: var(--color-muted);">Abhi tak koi enquiry nahi aayi hai.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | Prashasti IAS Academy{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow">Admin Panel</p>
+  <h1>Dashboard Overview</h1>
+  <p>Academy ke students, study material aur feedback ka summary.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="num">{{ total_students }}</div>
+    <div class="label">Registered Students</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">{{ total_materials }}</div>
+    <div class="label">Study Materials</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">{{ total_feedbacks }}</div>
+    <div class="label">Feedback Received</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">{{ total_enquiries }}</div>
+    <div class="label">Website Enquiries</div>
+  </div>
+</div>
+
+<div class="admin-form-grid">
+  <div class="form-card">
+    <h3>Recent Feedback</h3>
+    {% if recent_feedbacks %}
+      {% for fb in recent_feedbacks %}
+        <div class="feedback-item">
+          <div class="fb-subject">{{ fb.user_name }} &mdash; {{ fb.subject or 'General Feedback' }} <span class="fb-rating">({{ fb.rating or '-' }}★)</span></div>
+          <div class="fb-meta">{{ fb.created_at | fmtdate }}</div>
+          <div class="fb-message">{{ fb.message }}</div>
+        </div>
+      {% endfor %}
+      <div style="margin-top:16px;">
+        <a href="{{ url_for('admin_feedbacks') }}" class="btn btn-outline-sm" style="border-color: var(--color-maroon); color: var(--color-maroon);">View All Feedback &rarr;</a>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">💬</div>
+        <p>Abhi tak koi feedback nahi mila hai.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="form-card">
+    <h3>Recent Enquiries</h3>
+    {% if recent_enquiries %}
+      {% for en in recent_enquiries %}
+        <div class="feedback-item">
+          <div class="fb-subject">{{ en.name }} &mdash; {{ en.course or 'General Enquiry' }}</div>
+          <div class="fb-meta">{{ en.phone }} &bull; {{ en.created_at | fmtdate }}</div>
+          {% if en.message %}<div class="fb-message">{{ en.message }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      <div style="margin-top:16px;">
+        <a href="{{ url_for('admin_enquiries') }}" class="btn btn-outline-sm" style="border-color: var(--color-maroon); color: var(--color-maroon);">View All Enquiries &rarr;</a>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">📩</div>
+        <p>Abhi tak koi enquiry nahi aayi hai.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

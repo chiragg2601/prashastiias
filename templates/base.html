@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Prashasti IAS Academy{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/portal.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<header class="portal-navbar">
+  <div class="container nav-inner">
+    <a href="{{ url_for('home') }}" class="logo">
+      <span class="logo-mark">अ</span>
+      <div class="logo-text">
+        <span class="logo-title">Prashasti IAS</span>
+        <span class="logo-sub">Student Portal</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">&larr; Website</a>
+      {% if current_user %}
+        {% if current_user.is_admin %}
+          <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('admin_materials') }}">Materials</a>
+          <a href="{{ url_for('admin_feedbacks') }}">Feedback</a>
+          <a href="{{ url_for('admin_students') }}">Students</a>
+          <a href="{{ url_for('admin_enquiries') }}">Enquiries</a>
+          <a href="{{ url_for('profile') }}">Profile</a>
+        {% else %}
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('profile') }}">Profile</a>
+        {% endif %}
+        <span class="nav-user">Hi, {{ current_user.name.split(' ')[0] }}</span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-sm">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}" class="btn btn-primary-sm">Register</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<main class="portal-main">
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<footer class="portal-footer">
+  <p>&copy; 2026 Prashasti IAS Academy &mdash; Student Portal. All Rights Reserved.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/portal.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Manage Study Material | Admin{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow">Admin Panel</p>
+  <h1>Study Material</h1>
+  <p>Naya study material upload karein ya existing material manage karein.</p>
+</div>
+
+<div class="admin-form-grid">
+  <div class="form-card">
+    <h3>Upload New Material</h3>
+    <form method="POST" action="{{ url_for('admin_materials') }}" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="e.g. Modern History Notes - Chapter 5" required>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option>UPSC CSE Foundation</option>
+          <option>UP-PCS Combo Course</option>
+          <option>Optional Subjects</option>
+          <option>Daily Current Affairs & Test Series</option>
+          <option>General</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description (optional)</label>
+        <textarea id="description" name="description" rows="2" placeholder="Short description of the material"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Material Type</label>
+        <div class="material-type-toggle">
+          <input type="radio" id="typeFile" name="material_type" value="file" checked>
+          <label for="typeFile">📄 Upload File</label>
+          <input type="radio" id="typeLink" name="material_type" value="link">
+          <label for="typeLink">🔗 Add Link</label>
+        </div>
+      </div>
+
+      <div class="form-group conditional-field active" id="fileField">
+        <label for="file">Choose File (PDF, DOC, PPT, Image)</label>
+        <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg">
+      </div>
+
+      <div class="form-group conditional-field" id="linkField">
+        <label for="link_url">Link URL (Google Drive, YouTube, etc.)</label>
+        <input type="url" id="link_url" name="link_url" placeholder="https://drive.google.com/...">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Add Material</button>
+    </form>
+  </div>
+
+  <div class="form-card">
+    <h3>Quick Stats</h3>
+    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom:14px;">
+      Total materials uploaded: <strong>{{ materials|length }}</strong>
+    </p>
+    <p style="color: var(--color-muted); font-size:0.92rem;">
+      Students apne dashboard se yeh materials category-wise dekh sakte hain aur PDF files
+      download kar sakte hain ya links open kar sakte hain.
+    </p>
+  </div>
+</div>
+
+<div class="admin-table-wrap">
+  <div class="table-wrap-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Type</th>
+          <th>Uploaded On</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in materials %}
+          <tr>
+            <td>
+              <strong>{{ m.title }}</strong>
+              {% if m.description %}<br><span style="color:var(--color-muted); font-size:0.82rem;">{{ m.description }}</span>{% endif %}
+            </td>
+            <td>{{ m.category or '-' }}</td>
+            <td>
+              {% if m.material_type == 'file' %}
+                <span class="badge badge-file">📄 File</span>
+              {% else %}
+                <span class="badge badge-link">🔗 Link</span>
+              {% endif %}
+            </td>
+            <td>{{ m.uploaded_at | fmtdate('%d %b %Y') }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('delete_material', material_id=m.id) }}" class="confirm-delete" style="display:inline;">
+                <button type="submit" class="btn btn-danger" style="padding: 6px 16px; font-size:0.8rem;">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" style="text-align:center; color: var(--color-muted);">Koi material upload nahi hua hai.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

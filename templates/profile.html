@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}My Profile | Prashasti IAS Academy{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow">Account Settings</p>
+  <h1>My Profile</h1>
+  <p>Apni details update karein.</p>
+</div>
+
+<div class="auth-wrap">
+  <form method="POST" action="{{ url_for('profile') }}">
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" value="{{ user.name }}" required>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" value="{{ user.email }}" disabled>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" value="{{ user.phone or '' }}">
+      </div>
+      <div class="form-group">
+        <label for="course">Course</label>
+        <select id="course" name="course">
+          <option value="" {% if not user.course %}selected{% endif %}>Select Course</option>
+          {% for c in ['UPSC CSE Foundation', 'UP-PCS Combo Course', 'Optional Subjects', 'Daily Current Affairs & Test Series'] %}
+            <option {% if user.course == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="new_password">New Password</label>
+      <input type="password" id="new_password" name="new_password" placeholder="Leave blank to keep current password">
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prashasti IAS Academy | Best UPSC &amp; PCS Coaching in Meerut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container" style="padding-top: 16px;">
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- ===== Top Bar ===== -->
+<div class="top-bar">
+  <div class="container top-bar-inner">
+    <div class="top-bar-left">
+      <span>📍 187, 2nd Floor, Mohan Puri Road, Near Meghdoot Chowraha, Meerut</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="tel:+919759115116">📞 +91-9759115116</a>
+      <a href="tel:+919654050609">📞 +91-9654050609</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Header / Nav ===== -->
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <div class="logo">
+      <span class="logo-mark">अ</span>
+      <div class="logo-text">
+        <span class="logo-title">Prashasti IAS</span>
+        <span class="logo-sub">Academy &mdash; Meerut</span>
+      </div>
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+      <a href="#faculty">Faculty</a>
+      <a href="#results">Results</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="btn btn-primary nav-cta">Enquire Now</a>
+    {% if current_user and not current_user.is_admin %}
+      <a href="{{ url_for('dashboard') }}" class="btn btn-outline nav-cta" style="border-color: var(--color-navy); color: var(--color-navy); padding: 11px 24px; font-size: 0.88rem;">My Dashboard</a>
+    {% elif not current_user %}
+      <a href="{{ url_for('login') }}" class="btn btn-outline nav-cta" style="border-color: var(--color-navy); color: var(--color-navy); padding: 11px 24px; font-size: 0.88rem;">Student Login</a>
+    {% endif %}
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-ashoka">𑀅</div>
+    <div class="hero-particles" id="particles"></div>
+  </div>
+  <div class="container hero-content">
+    <p class="hero-eyebrow reveal">सत्यमेव जयते &mdash; Established 2018</p>
+    <h1 class="hero-title">
+      <span class="reveal" style="--d:0.05s">Apke IAS Banne Ke</span>
+      <span class="reveal hero-highlight" style="--d:0.2s">Sapne Ko</span>
+      <span class="reveal" style="--d:0.35s">Dete Hain Ek Disha</span>
+    </h1>
+    <p class="hero-desc reveal" style="--d:0.5s">
+      Meerut ki sabse trusted UPSC &amp; PCS coaching academy &mdash; experienced faculty,
+      personalized mentorship aur proven results ke saath aapki civil services
+      ki yatra ko safal banane ke liye.
+    </p>
+    <div class="hero-cta reveal" style="--d:0.65s">
+      <a href="#courses" class="btn btn-primary">Explore Courses</a>
+      <a href="#contact" class="btn btn-outline">Book Free Counselling</a>
+    </div>
+    <div class="hero-stats reveal" style="--d:0.8s">
+      <div class="stat">
+        <span class="stat-number" data-target="4.9">0</span>
+        <span class="stat-label">Google Rating</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" data-target="500" data-suffix="+">0</span>
+        <span class="stat-label">Students Mentored</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" data-target="6" data-suffix="+">0</span>
+        <span class="stat-label">Years of Excellence</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number" data-target="50" data-suffix="+">0</span>
+        <span class="stat-label">Selections</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span></span>
+    <p>Scroll Down</p>
+  </div>
+</section>
+
+<!-- ===== Marquee ===== -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>UPSC CSE Foundation</span><span>•</span>
+      <span>UP-PCS Coaching</span><span>•</span>
+      <span>Optional Subjects</span><span>•</span>
+      <span>Mains Answer Writing</span><span>•</span>
+      <span>Interview Guidance</span><span>•</span>
+      <span>Daily Current Affairs</span><span>•</span>
+      <span>Test Series</span><span>•</span>
+      <span>UPSC CSE Foundation</span><span>•</span>
+      <span>UP-PCS Coaching</span><span>•</span>
+      <span>Optional Subjects</span><span>•</span>
+      <span>Mains Answer Writing</span><span>•</span>
+      <span>Interview Guidance</span><span>•</span>
+      <span>Daily Current Affairs</span><span>•</span>
+      <span>Test Series</span><span>•</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== About ===== -->
+<section class="about" id="about">
+  <div class="container about-grid">
+    <div class="about-visual reveal-left">
+      <div class="about-frame">
+        <img src="{{ url_for('static', filename='img/about-academy.jpg') }}" alt="Prashasti IAS Academy" class="about-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="about-img" style="display:none;">🏛️</div>
+        <div class="about-badge">
+          <span class="badge-num">2018</span>
+          <span class="badge-text">Foundation Year</span>
+        </div>
+      </div>
+      <div class="about-seal">
+        <span>राजपत्रित अधिकारी बनाने का संकल्प</span>
+      </div>
+    </div>
+    <div class="about-text reveal-right">
+      <p class="section-eyebrow">About The Academy</p>
+      <h2 class="section-title">Where Dedication Meets Direction</h2>
+      <p class="about-para">
+        Prashasti IAS Academy, Mohanpuri Meerut mein sthapit, ek premier coaching
+        institute hai jo UPSC Civil Services Examination aur UP-PCS ki taiyari kar
+        rahe students ko top-notch guidance pradan karta hai. Hamara mission hai
+        aspirants ko sahi disha, structured study material aur expert mentorship
+        dena &mdash; jisse wo apna IAS/IPS/PCS banne ka sapna sach kar sakein.
+      </p>
+      <div class="about-points">
+        <div class="point">
+          <span class="point-icon">✓</span>
+          <div>
+            <h4>Experienced Faculty</h4>
+            <p>Subject experts jo concepts ko simple aur exam-oriented tareeke se sikhate hain.</p>
+          </div>
+        </div>
+        <div class="point">
+          <span class="point-icon">✓</span>
+          <div>
+            <h4>Personalized Mentorship</h4>
+            <p>Har student ki progress ko track karke individual guidance diya jaata hai.</p>
+          </div>
+        </div>
+        <div class="point">
+          <span class="point-icon">✓</span>
+          <div>
+            <h4>Proven Track Record</h4>
+            <p>4.9/5 rating ke saath students aur parents ka bharosa hi hamari pehchaan hai.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Courses ===== -->
+<section class="courses" id="courses">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Our Programs</p>
+      <h2 class="section-title">Courses Designed For Every Aspirant</h2>
+      <p class="section-desc">Foundation se Mains tak &mdash; har stage ke liye structured aur result-oriented courses.</p>
+    </div>
+    <div class="course-grid">
+      <div class="course-card reveal" style="--d:0s">
+        <div class="course-icon">📘</div>
+        <h3>UPSC CSE Foundation</h3>
+        <p>Prelims aur Mains ke liye complete foundation course &mdash; NCERT se advance level tak coverage.</p>
+        <ul class="course-tags">
+          <li>GS Paper I &amp; II</li>
+          <li>CSAT</li>
+          <li>Essay Writing</li>
+        </ul>
+        <a href="#contact" class="course-link">Know More &rarr;</a>
+      </div>
+      <div class="course-card reveal featured" style="--d:0.1s">
+        <div class="ribbon">Most Popular</div>
+        <div class="course-icon">📗</div>
+        <h3>UP-PCS Combo Course</h3>
+        <p>UP State Civil Services ke pattern par based, Hindi medium aur English medium dono available.</p>
+        <ul class="course-tags">
+          <li>Prelims + Mains</li>
+          <li>UP GK Special</li>
+          <li>Mock Interviews</li>
+        </ul>
+        <a href="#contact" class="course-link">Know More &rarr;</a>
+      </div>
+      <div class="course-card reveal" style="--d:0.2s">
+        <div class="course-icon">📙</div>
+        <h3>Optional Subjects</h3>
+        <p>History, Geography, Sociology, Public Administration jaise optional subjects ki deep coaching.</p>
+        <ul class="course-tags">
+          <li>Subject Experts</li>
+          <li>Answer Writing</li>
+          <li>Test Series</li>
+        </ul>
+        <a href="#contact" class="course-link">Know More &rarr;</a>
+      </div>
+      <div class="course-card reveal" style="--d:0.3s">
+        <div class="course-icon">📕</div>
+        <h3>Daily Current Affairs &amp; Test Series</h3>
+        <p>Daily newspaper analysis, weekly tests aur full-length mock exams jo real exam ka anubhav dete hain.</p>
+        <ul class="course-tags">
+          <li>Daily Updates</li>
+          <li>Weekly Tests</li>
+          <li>Performance Analysis</li>
+        </ul>
+        <a href="#contact" class="course-link">Know More &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Why Choose Us ===== -->
+<section class="why-us">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow light">Why Prashasti IAS</p>
+      <h2 class="section-title light">Built On Trust, Driven By Results</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal" style="--d:0s">
+        <div class="why-num">01</div>
+        <h3>Expert Faculty Panel</h3>
+        <p>Senior educators aur subject matter experts jinka focus hai concept clarity aur exam strategy par.</p>
+      </div>
+      <div class="why-card reveal" style="--d:0.1s">
+        <div class="why-num">02</div>
+        <h3>Small Batch Sizes</h3>
+        <p>Limited students per batch &mdash; jisse har candidate ko personal attention mil sake.</p>
+      </div>
+      <div class="why-card reveal" style="--d:0.2s">
+        <div class="why-num">03</div>
+        <h3>Updated Study Material</h3>
+        <p>Latest syllabus ke according comprehensive aur exam-relevant notes &amp; material.</p>
+      </div>
+      <div class="why-card reveal" style="--d:0.3s">
+        <div class="why-num">04</div>
+        <h3>Regular Tests &amp; Feedback</h3>
+        <p>Weekly assessments aur detailed performance review se progress track karte hain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Faculty ===== -->
+<section class="faculty" id="faculty">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Meet Our Mentors</p>
+      <h2 class="section-title">Faculty Jo Sirf Padhate Nahi, Margdarshan Karte Hain</h2>
+    </div>
+    <div class="faculty-grid">
+      <div class="faculty-card reveal" style="--d:0s">
+        <div class="faculty-avatar">👨‍🏫</div>
+        <h3>Faculty Name</h3>
+        <p class="faculty-role">General Studies &amp; Polity</p>
+        <p class="faculty-bio">10+ saal ka teaching experience, hundreds students ko Prelims clear karne mein madad ki hai.</p>
+      </div>
+      <div class="faculty-card reveal" style="--d:0.1s">
+        <div class="faculty-avatar">👩‍🏫</div>
+        <h3>Faculty Name</h3>
+        <p class="faculty-role">History &amp; Culture</p>
+        <p class="faculty-bio">Storytelling style teaching jisse complex topics bhi easily samajh aate hain.</p>
+      </div>
+      <div class="faculty-card reveal" style="--d:0.2s">
+        <div class="faculty-avatar">👨‍🏫</div>
+        <h3>Faculty Name</h3>
+        <p class="faculty-role">Geography &amp; Environment</p>
+        <p class="faculty-bio">Maps aur diagrams ke through visual learning par focus karte hain.</p>
+      </div>
+      <div class="faculty-card reveal" style="--d:0.3s">
+        <div class="faculty-avatar">👩‍🏫</div>
+        <h3>Faculty Name</h3>
+        <p class="faculty-role">Essay &amp; Answer Writing</p>
+        <p class="faculty-bio">Mains stage ke liye structured answer-writing techniques sikhate hain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Results ===== -->
+<section class="results" id="results">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Our Pride</p>
+      <h2 class="section-title">Selections &amp; Success Stories</h2>
+      <p class="section-desc">Hamare students ki mehnat aur hamari guidance ka result &mdash; har saal naye achievers.</p>
+    </div>
+    <div class="results-grid">
+      <div class="result-card reveal" style="--d:0s">
+        <div class="result-photo">🎓</div>
+        <h3>Student Name</h3>
+        <p class="result-rank">UP-PCS &mdash; Selected</p>
+        <p class="result-quote">"Prashasti IAS ki guidance ne meri taiyari ko ek nayi direction di."</p>
+      </div>
+      <div class="result-card reveal" style="--d:0.1s">
+        <div class="result-photo">🎓</div>
+        <h3>Student Name</h3>
+        <p class="result-rank">UPSC CSE &mdash; Mains Qualified</p>
+        <p class="result-quote">"Test series aur answer writing practice ne mera confidence badhaya."</p>
+      </div>
+      <div class="result-card reveal" style="--d:0.2s">
+        <div class="result-photo">🎓</div>
+        <h3>Student Name</h3>
+        <p class="result-rank">UP-PCS &mdash; Selected</p>
+        <p class="result-quote">"Faculty ka personal attention sabse alag experience tha."</p>
+      </div>
+    </div>
+    <div class="results-cta reveal">
+      <a href="#contact" class="btn btn-primary">Join The Next Batch Of Achievers</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Student Voices</p>
+      <h2 class="section-title">What Our Students Say</h2>
+    </div>
+    <div class="testimonial-slider">
+      <div class="testimonial-track" id="testiTrack">
+        <div class="testimonial-card">
+          <div class="quote-mark">&ldquo;</div>
+          <p>Prashasti IAS Academy ka environment bahut hi motivating hai. Teachers har doubt ko patiently clear karte hain.</p>
+          <div class="testi-author">
+            <div class="testi-avatar">A</div>
+            <div>
+              <h4>Aspirant 1</h4>
+              <span>UPSC CSE Student</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="quote-mark">&ldquo;</div>
+          <p>Material itna well-structured hai ki self-study karna bhi asaan ho jaata hai. Highly recommended for PCS aspirants.</p>
+          <div class="testi-author">
+            <div class="testi-avatar">B</div>
+            <div>
+              <h4>Aspirant 2</h4>
+              <span>UP-PCS Student</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="quote-mark">&ldquo;</div>
+          <p>Mock interviews aur personality development sessions ne mera confidence bahut badhaya. Thank you Prashasti IAS!</p>
+          <div class="testi-author">
+            <div class="testi-avatar">C</div>
+            <div>
+              <h4>Aspirant 3</h4>
+              <span>Interview Batch</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-dots" id="testiDots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Gallery ===== -->
+<section class="gallery" id="gallery">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-eyebrow">Glimpses</p>
+      <h2 class="section-title">Life At Prashasti IAS Academy</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal" style="--d:0s">📚</div>
+      <div class="gallery-item reveal big" style="--d:0.1s">🏫</div>
+      <div class="gallery-item reveal" style="--d:0.2s">🧑‍🎓</div>
+      <div class="gallery-item reveal" style="--d:0.1s">📝</div>
+      <div class="gallery-item reveal big" style="--d:0.2s">🏆</div>
+      <div class="gallery-item reveal" style="--d:0.3s">👥</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Contact ===== -->
+<section class="contact" id="contact">
+  <div class="container contact-grid">
+    <div class="contact-info reveal-left">
+      <p class="section-eyebrow">Get In Touch</p>
+      <h2 class="section-title">Start Your IAS Journey Today</h2>
+      <p class="about-para">
+        Free counselling session ke liye visit karein ya call/WhatsApp karein.
+        Hamari team aapko sahi course aur batch choose karne mein guide karegi.
+      </p>
+      <div class="contact-items">
+        <div class="contact-item">
+          <span class="contact-icon">📍</span>
+          <div>
+            <h4>Address</h4>
+            <p>187, 2nd Floor, Mohan Puri Road, Near Meghdoot Chowraha, Mohanpuri, Meerut, Uttar Pradesh 250002</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📞</span>
+          <div>
+            <h4>Phone</h4>
+            <p><a href="tel:+919759115116">+91-9759115116</a> &nbsp;|&nbsp; <a href="tel:+919654050609">+91-9654050609</a></p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">⏰</span>
+          <div>
+            <h4>Timing</h4>
+            <p>Mon &ndash; Sat: 8:00 AM &ndash; 8:00 PM</p>
+          </div>
+        </div>
+      </div>
+      <div class="contact-map">
+        <iframe
+          title="Prashasti IAS Academy Location"
+          src="https://www.google.com/maps?q=Prashasti+IAS+Academy+Mohanpuri+Meerut&output=embed"
+          width="100%" height="220" style="border:0; border-radius: var(--radius); margin-top: 24px;"
+          allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+    <div class="contact-form-wrap reveal-right">
+      <form class="contact-form" id="contactForm">
+        <h3>Free Counselling Form</h3>
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="tel" name="phone" placeholder="Phone Number" required>
+        </div>
+        <input type="email" name="email" placeholder="Email Address">
+        <select name="course" required>
+          <option value="" disabled selected>Select Course</option>
+          <option>UPSC CSE Foundation</option>
+          <option>UP-PCS Combo Course</option>
+          <option>Optional Subjects</option>
+          <option>Daily Current Affairs &amp; Test Series</option>
+        </select>
+        <textarea name="message" placeholder="Your Message" rows="4"></textarea>
+        <input type="hidden" name="source" value="contact_form">
+        <button type="submit" class="btn btn-primary full-width">Submit Enquiry</button>
+        <p class="form-success" id="formSuccess">Thank you! Hum aapse shortly contact karenge.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <div class="logo">
+        <span class="logo-mark">अ</span>
+        <div class="logo-text">
+          <span class="logo-title">Prashasti IAS</span>
+          <span class="logo-sub">Academy &mdash; Meerut</span>
+        </div>
+      </div>
+      <p>Achievers' 1st Choice &mdash; Best UPSC &amp; PCS Coaching Institute in Meerut, Uttar Pradesh.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="#about">About</a>
+      <a href="#courses">Courses</a>
+      <a href="#faculty">Faculty</a>
+      <a href="#results">Results</a>
+      <a href="#contact">Contact</a>
+      {% if current_user and not current_user.is_admin %}
+        <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+      {% elif not current_user %}
+        <a href="{{ url_for('login') }}">Student Login</a>
+      {% endif %}
+    </div>
+    <div class="footer-contact">
+      <h4>Contact</h4>
+      <p>📍 Mohanpuri, Near Meghdoot Chowraha, Meerut</p>
+      <p>📞 +91-9759115116</p>
+      <p>📞 +91-9654050609</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Prashasti IAS Academy. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<!-- ===== Enquiry Popup Modal ===== -->
+<div class="modal-overlay" id="enquiryModal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div class="modal-header">
+      <p class="hero-eyebrow" style="color: var(--color-maroon);">Free Counselling</p>
+      <h3>Apna Free Counselling Session Book Karein</h3>
+      <p class="modal-sub">Hamari team aapko sahi course choose karne mein guide karegi.</p>
+    </div>
+    <form class="contact-form" id="popupForm">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="tel" name="phone" placeholder="Phone Number" required>
+      <select name="course" required>
+        <option value="" disabled selected>Select Course</option>
+        <option>UPSC CSE Foundation</option>
+        <option>UP-PCS Combo Course</option>
+        <option>Optional Subjects</option>
+        <option>Daily Current Affairs &amp; Test Series</option>
+      </select>
+      <input type="hidden" name="source" value="popup">
+      <button type="submit" class="btn btn-primary full-width">Submit Enquiry</button>
+      <p class="form-success" id="popupSuccess">Thank you! Hum aapse shortly contact karenge.</p>
+    </form>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Prashasti IAS Academy{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <p class="eyebrow">Student Dashboard</p>
+  <h1>Welcome, {{ user.name }}</h1>
+  <p>Yahan se aap study material download kar sakte hain aur feedback de sakte hain.</p>
+</div>
+
+<div class="dashboard-grid">
+  <!-- Study Material -->
+  <div>
+    {% if categories %}
+      {% for category, materials in categories.items() %}
+        <div class="material-category">
+          <h3>{{ category }}</h3>
+          <div class="material-list">
+            {% for m in materials %}
+              <div class="material-card">
+                <div class="material-info">
+                  <div class="material-icon">{{ '📄' if m.material_type == 'file' else '🔗' }}</div>
+                  <div>
+                    <h4>{{ m.title }}</h4>
+                    {% if m.description %}<p>{{ m.description }}</p>{% endif %}
+                  </div>
+                </div>
+                <div class="material-actions">
+                  {% if m.material_type == 'file' %}
+                    <a href="{{ url_for('download_material', material_id=m.id) }}">Download</a>
+                  {% else %}
+                    <a href="{{ m.link_url }}" target="_blank" rel="noopener">Open Link</a>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">📚</div>
+        <p>Abhi tak koi study material upload nahi hua hai. Jaldi hi available hoga!</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Feedback -->
+  <div>
+    <div class="feedback-box">
+      <h3>Submit Feedback</h3>
+      <form method="POST" action="{{ url_for('submit_feedback') }}">
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" placeholder="e.g. Faculty, Material, Batch Timing">
+        </div>
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="rating-select">
+            {% for i in range(1,6) %}
+              <input type="radio" id="r{{ i }}" name="rating" value="{{ i }}" {% if i == 5 %}checked{% endif %}>
+              <label for="r{{ i }}">{{ i }} ★</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message">Your Feedback</label>
+          <textarea id="message" name="message" rows="4" placeholder="Apna feedback yahan likhein..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Submit Feedback</button>
+      </form>
+
+      {% if my_feedbacks %}
+        <div class="feedback-history">
+          <h4>Your Previous Feedback</h4>
+          {% for fb in my_feedbacks %}
+            <div class="feedback-item">
+              <div class="fb-subject">{{ fb.subject or 'General Feedback' }} &mdash; <span class="fb-rating">{{ fb.rating or '-' }}★</span></div>
+              <div class="fb-meta">{{ fb.created_at | fmtdate }}</div>
+              <div class="fb-message">{{ fb.message }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
