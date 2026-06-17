@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Login | Prashasti IAS Academy{% endblock %}
+{% block title %}Admin Login | Prashasti IAS Academy{% endblock %}
 
 {% block content %}
 <div class="auth-wrap">
   <div class="auth-header">
     <div class="auth-mark">अ</div>
-    <h1>Welcome Back</h1>
-    <p>Login to access your study material and dashboard</p>
+    <h1>Admin Login</h1>
+    <p>Login to manage study material, photos, feedback and enquiries</p>
   </div>
 
   <form method="POST" action="{{ url_for('login') }}">
@@ -20,9 +20,5 @@
     </div>
     <button type="submit" class="btn btn-primary btn-block">Login</button>
   </form>
-
-  <div class="auth-footer">
-    <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
-  </div>
 </div>
 {% endblock %}

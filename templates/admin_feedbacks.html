@@ -2,10 +2,13 @@
 {% block title %}All Feedback | Admin{% endblock %}
 
 {% block content %}
-<div class="page-head">
-  <p class="eyebrow">Admin Panel</p>
-  <h1>Student Feedback</h1>
-  <p>Sabhi students dwara diya gaya feedback yahan dekhein.</p>
+<div class="page-head" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+  <div>
+    <p class="eyebrow">Admin Panel</p>
+    <h1>Website Feedback</h1>
+    <p>Visitors dwara diya gaya feedback yahan dekhein.</p>
+  </div>
+  <a href="{{ url_for('export_feedbacks') }}" class="btn btn-primary">⬇ Export to Excel</a>
 </div>
 
 <div class="admin-table-wrap">
@@ -13,24 +16,30 @@
     <table>
       <thead>
         <tr>
-          <th>Student</th>
+          <th>Name</th>
           <th>Subject</th>
           <th>Rating</th>
           <th>Message</th>
           <th>Date</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         {% for fb in feedbacks %}
           <tr>
-            <td><strong>{{ fb.user_name }}</strong><br><span style="color:var(--color-muted); font-size:0.82rem;">{{ fb.user_email }}</span></td>
+            <td><strong>{{ fb.name }}</strong></td>
             <td>{{ fb.subject or 'General' }}</td>
             <td><span class="fb-rating">{{ fb.rating or '-' }}★</span></td>
             <td>{{ fb.message }}</td>
             <td>{{ fb.created_at | fmtdate }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('delete_feedback', feedback_id=fb.id) }}" class="confirm-delete" style="display:inline;">
+                <button type="submit" class="btn btn-danger" style="padding: 6px 16px; font-size:0.8rem;">Delete</button>
+              </form>
+            </td>
           </tr>
         {% else %}
-          <tr><td colspan="5" style="text-align:center; color: var(--color-muted);">Abhi tak koi feedback nahi mila hai.</td></tr>
+          <tr><td colspan="6" style="text-align:center; color: var(--color-muted);">Abhi tak koi feedback nahi mila hai.</td></tr>
         {% endfor %}
       </tbody>
     </table>

@@ -184,3 +184,47 @@ if (enquiryModal) {
       });
   });
 }
+
+// ===== Public Feedback Form =====
+const feedbackForm = document.getElementById('feedbackForm');
+const feedbackSuccess = document.getElementById('feedbackSuccess');
+const starSelect = document.getElementById('starSelect');
+const ratingInput = document.getElementById('ratingInput');
+
+if (starSelect) {
+  const stars = starSelect.querySelectorAll('span');
+
+  function setStars(val) {
+    stars.forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+    });
+    ratingInput.value = val;
+  }
+
+  setStars(5);
+
+  stars.forEach(s => {
+    s.addEventListener('click', () => setStars(parseInt(s.dataset.val)));
+  });
+}
+
+if (feedbackForm) {
+  feedbackForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(feedbackForm);
+    fetch('/feedback', { method: 'POST', body: formData })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          feedbackSuccess.classList.add('show');
+          feedbackForm.reset();
+          setStars(5);
+          setTimeout(() => feedbackSuccess.classList.remove('show'), 5000);
+        }
+      })
+      .catch(() => {
+        feedbackSuccess.textContent = 'Something went wrong. Please try again.';
+        feedbackSuccess.classList.add('show');
+      });
+  });
+}

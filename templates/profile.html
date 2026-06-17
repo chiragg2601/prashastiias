@@ -20,20 +20,9 @@
       <input type="email" value="{{ user.email }}" disabled>
     </div>
 
-    <div class="form-row-2">
-      <div class="form-group">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone" value="{{ user.phone or '' }}">
-      </div>
-      <div class="form-group">
-        <label for="course">Course</label>
-        <select id="course" name="course">
-          <option value="" {% if not user.course %}selected{% endif %}>Select Course</option>
-          {% for c in ['UPSC CSE Foundation', 'UP-PCS Combo Course', 'Optional Subjects', 'Daily Current Affairs & Test Series'] %}
-            <option {% if user.course == c %}selected{% endif %}>{{ c }}</option>
-          {% endfor %}
-        </select>
-      </div>
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" value="{{ user.phone or '' }}">
     </div>
 
     <div class="form-group">

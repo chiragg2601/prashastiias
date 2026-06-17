@@ -5,17 +5,17 @@
 <div class="page-head">
   <p class="eyebrow">Admin Panel</p>
   <h1>Dashboard Overview</h1>
-  <p>Academy ke students, study material aur feedback ka summary.</p>
+  <p>Website ke study material, photos, feedback aur enquiries ka summary.</p>
 </div>
 
 <div class="stats-row">
   <div class="stat-box">
-    <div class="num">{{ total_students }}</div>
-    <div class="label">Registered Students</div>
-  </div>
-  <div class="stat-box">
     <div class="num">{{ total_materials }}</div>
     <div class="label">Study Materials</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">{{ total_photos }}</div>
+    <div class="label">Photos Uploaded</div>
   </div>
   <div class="stat-box">
     <div class="num">{{ total_feedbacks }}</div>
@@ -33,7 +33,7 @@
     {% if recent_feedbacks %}
       {% for fb in recent_feedbacks %}
         <div class="feedback-item">
-          <div class="fb-subject">{{ fb.user_name }} &mdash; {{ fb.subject or 'General Feedback' }} <span class="fb-rating">({{ fb.rating or '-' }}★)</span></div>
+          <div class="fb-subject">{{ fb.name }} &mdash; {{ fb.subject or 'General Feedback' }} <span class="fb-rating">({{ fb.rating or '-' }}★)</span></div>
           <div class="fb-meta">{{ fb.created_at | fmtdate }}</div>
           <div class="fb-message">{{ fb.message }}</div>
         </div>

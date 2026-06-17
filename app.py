@@ -13,15 +13,20 @@ from openpyxl.styles import Font, PatternFill, Alignment
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+PHOTO_FOLDER = os.path.join(BASE_DIR, 'static', 'photos')
 DB_PATH = os.path.join(BASE_DIR, 'prashasti.db')
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg'}
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+PHOTO_CATEGORIES = ['Coaching', 'Faculty', 'Students & Results', 'Gallery']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'change-this-secret-key-in-production'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['PHOTO_FOLDER'] = PHOTO_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024  # 25 MB max upload
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PHOTO_FOLDER, exist_ok=True)
 
 
 # ===================== DATABASE HELPERS =====================
@@ -51,11 +56,6 @@ def init_db_schema():
             phone TEXT,
             password_hash TEXT NOT NULL,
             is_admin INTEGER DEFAULT 0,
-            course TEXT,
-            batch TEXT,
-            address TEXT,
-            fees_status TEXT,
-            notes TEXT,
             created_at TEXT NOT NULL
         );
 
@@ -73,12 +73,11 @@ def init_db_schema():
 
         CREATE TABLE IF NOT EXISTS feedback (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
             subject TEXT,
             message TEXT NOT NULL,
             rating INTEGER,
-            created_at TEXT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
+            created_at TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS enquiry (
@@ -91,14 +90,15 @@ def init_db_schema():
             source TEXT,
             created_at TEXT NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS photo (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category TEXT NOT NULL,
+            title TEXT,
+            filename TEXT NOT NULL,
+            uploaded_at TEXT NOT NULL
+        );
     ''')
-
-    # Migrate older databases that may be missing the new user columns
-    existing_cols = {row[1] for row in db.execute('PRAGMA table_info(user)').fetchall()}
-    for col in ('batch', 'address', 'fees_status', 'notes'):
-        if col not in existing_cols:
-            db.execute(f'ALTER TABLE user ADD COLUMN {col} TEXT')
-
     db.commit()
     db.close()
 
@@ -149,14 +149,8 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def login_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please log in to continue.', 'error')
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated
+def allowed_image_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 
 def admin_required(f):
@@ -171,6 +165,14 @@ def admin_required(f):
             abort(403)
         return f(*args, **kwargs)
     return decorated
+
+
+def get_photos_by_category(category, limit=None):
+    db = get_db()
+    query = 'SELECT * FROM photo WHERE category = ? ORDER BY uploaded_at DESC'
+    if limit:
+        query += f' LIMIT {int(limit)}'
+    return db.execute(query, (category,)).fetchall()
 
 
 @app.context_processor
@@ -196,7 +198,13 @@ def fmtdate(value, fmt='%d %b %Y, %I:%M %p'):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    photos = {
+        'coaching': get_photos_by_category('Coaching', limit=1),
+        'faculty': get_photos_by_category('Faculty', limit=4),
+        'students': get_photos_by_category('Students & Results', limit=3),
+        'gallery': get_photos_by_category('Gallery', limit=6),
+    }
+    return render_template('index.html', photos=photos)
 
 
 @app.route('/enquiry', methods=['POST'])
@@ -222,42 +230,54 @@ def submit_enquiry():
     return {'success': True}
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        email = request.form.get('email', '').strip().lower()
-        phone = request.form.get('phone', '').strip()
-        course = request.form.get('course', '').strip()
-        password = request.form.get('password', '')
-        confirm = request.form.get('confirm_password', '')
+@app.route('/study-material')
+def study_material_page():
+    db = get_db()
+    materials = db.execute('SELECT * FROM study_material ORDER BY uploaded_at DESC').fetchall()
 
-        if not name or not email or not password:
-            flash('Please fill all required fields.', 'error')
-            return redirect(url_for('register'))
+    categories = {}
+    for m in materials:
+        cat = m['category'] or 'General'
+        categories.setdefault(cat, []).append(m)
 
-        if password != confirm:
-            flash('Passwords do not match.', 'error')
-            return redirect(url_for('register'))
+    return render_template('study_material.html', categories=categories)
 
-        db = get_db()
-        existing = db.execute('SELECT id FROM user WHERE email = ?', (email,)).fetchone()
-        if existing:
-            flash('An account with this email already exists. Please log in.', 'error')
-            return redirect(url_for('login'))
 
-        password_hash = generate_password_hash(password)
-        db.execute(
-            'INSERT INTO user (name, email, phone, password_hash, is_admin, course, created_at) '
-            'VALUES (?, ?, ?, ?, 0, ?, ?)',
-            (name, email, phone, password_hash, course, now_str())
-        )
-        db.commit()
+@app.route('/material/download/<int:material_id>')
+def download_material(material_id):
+    db = get_db()
+    material = db.execute('SELECT * FROM study_material WHERE id = ?', (material_id,)).fetchone()
+    if not material or material['material_type'] != 'file' or not material['filename']:
+        abort(404)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], material['filename'],
+                                 as_attachment=True, download_name=material['original_filename'])
 
-        flash('Registration successful! Please log in.', 'success')
-        return redirect(url_for('login'))
 
-    return render_template('register.html')
+@app.route('/feedback', methods=['POST'])
+def submit_feedback():
+    name = request.form.get('name', '').strip()
+    subject = request.form.get('subject', '').strip()
+    message = request.form.get('message', '').strip()
+    rating = request.form.get('rating', '0')
+
+    if not name or not message:
+        return {'success': False, 'error': 'Name and message are required.'}, 400
+
+    try:
+        rating_val = int(rating)
+        if rating_val < 1 or rating_val > 5:
+            rating_val = None
+    except ValueError:
+        rating_val = None
+
+    db = get_db()
+    db.execute(
+        'INSERT INTO feedback (name, subject, message, rating, created_at) VALUES (?, ?, ?, ?, ?)',
+        (name, subject, message, rating_val, now_str())
+    )
+    db.commit()
+
+    return {'success': True}
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -269,14 +289,12 @@ def login():
         db = get_db()
         user = db.execute('SELECT * FROM user WHERE email = ?', (email,)).fetchone()
 
-        if user and check_password_hash(user['password_hash'], password):
+        if user and check_password_hash(user['password_hash'], password) and user['is_admin']:
             session['user_id'] = user['id']
             session['user_name'] = user['name']
-            session['is_admin'] = bool(user['is_admin'])
+            session['is_admin'] = True
             flash(f"Welcome back, {user['name']}!", 'success')
-            if user['is_admin']:
-                return redirect(url_for('admin_dashboard'))
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('admin_dashboard'))
 
         flash('Invalid email or password.', 'error')
         return redirect(url_for('login'))
@@ -291,73 +309,8 @@ def logout():
     return redirect(url_for('home'))
 
 
-# ===================== STUDENT ROUTES =====================
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    db = get_db()
-    user = db.execute('SELECT * FROM user WHERE id = ?', (session['user_id'],)).fetchone()
-
-    if user['is_admin']:
-        return redirect(url_for('admin_dashboard'))
-
-    materials = db.execute('SELECT * FROM study_material ORDER BY uploaded_at DESC').fetchall()
-    my_feedbacks = db.execute(
-        'SELECT * FROM feedback WHERE user_id = ? ORDER BY created_at DESC', (user['id'],)
-    ).fetchall()
-
-    # group materials by category
-    categories = {}
-    for m in materials:
-        cat = m['category'] or 'General'
-        categories.setdefault(cat, []).append(m)
-
-    return render_template('dashboard.html', user=user, categories=categories, my_feedbacks=my_feedbacks)
-
-
-@app.route('/material/download/<int:material_id>')
-@login_required
-def download_material(material_id):
-    db = get_db()
-    material = db.execute('SELECT * FROM study_material WHERE id = ?', (material_id,)).fetchone()
-    if not material or material['material_type'] != 'file' or not material['filename']:
-        abort(404)
-    return send_from_directory(app.config['UPLOAD_FOLDER'], material['filename'],
-                                 as_attachment=True, download_name=material['original_filename'])
-
-
-@app.route('/feedback', methods=['POST'])
-@login_required
-def submit_feedback():
-    subject = request.form.get('subject', '').strip()
-    message = request.form.get('message', '').strip()
-    rating = request.form.get('rating', '0')
-
-    if not message:
-        flash('Feedback message cannot be empty.', 'error')
-        return redirect(url_for('dashboard'))
-
-    try:
-        rating_val = int(rating)
-        if rating_val < 1 or rating_val > 5:
-            rating_val = None
-    except ValueError:
-        rating_val = None
-
-    db = get_db()
-    db.execute(
-        'INSERT INTO feedback (user_id, subject, message, rating, created_at) VALUES (?, ?, ?, ?, ?)',
-        (session['user_id'], subject, message, rating_val, now_str())
-    )
-    db.commit()
-
-    flash('Thank you! Your feedback has been submitted.', 'success')
-    return redirect(url_for('dashboard'))
-
-
 @app.route('/profile', methods=['GET', 'POST'])
-@login_required
+@admin_required
 def profile():
     db = get_db()
     user = db.execute('SELECT * FROM user WHERE id = ?', (session['user_id'],)).fetchone()
@@ -365,19 +318,18 @@ def profile():
     if request.method == 'POST':
         name = request.form.get('name', user['name']).strip()
         phone = request.form.get('phone', user['phone'] or '').strip()
-        course = request.form.get('course', user['course'] or '').strip()
         new_password = request.form.get('new_password', '').strip()
 
         if new_password:
             password_hash = generate_password_hash(new_password)
             db.execute(
-                'UPDATE user SET name = ?, phone = ?, course = ?, password_hash = ? WHERE id = ?',
-                (name, phone, course, password_hash, user['id'])
+                'UPDATE user SET name = ?, phone = ?, password_hash = ? WHERE id = ?',
+                (name, phone, password_hash, user['id'])
             )
         else:
             db.execute(
-                'UPDATE user SET name = ?, phone = ?, course = ? WHERE id = ?',
-                (name, phone, course, user['id'])
+                'UPDATE user SET name = ?, phone = ? WHERE id = ?',
+                (name, phone, user['id'])
             )
         db.commit()
         session['user_name'] = name
@@ -393,28 +345,24 @@ def profile():
 @admin_required
 def admin_dashboard():
     db = get_db()
-    total_students = db.execute('SELECT COUNT(*) FROM user WHERE is_admin = 0').fetchone()[0]
     total_materials = db.execute('SELECT COUNT(*) FROM study_material').fetchone()[0]
     total_feedbacks = db.execute('SELECT COUNT(*) FROM feedback').fetchone()[0]
     total_enquiries = db.execute('SELECT COUNT(*) FROM enquiry').fetchone()[0]
+    total_photos = db.execute('SELECT COUNT(*) FROM photo').fetchone()[0]
 
-    recent_feedbacks = db.execute('''
-        SELECT feedback.*, user.name AS user_name, user.email AS user_email
-        FROM feedback
-        JOIN user ON feedback.user_id = user.id
-        ORDER BY feedback.created_at DESC
-        LIMIT 5
-    ''').fetchall()
+    recent_feedbacks = db.execute(
+        'SELECT * FROM feedback ORDER BY created_at DESC LIMIT 5'
+    ).fetchall()
 
     recent_enquiries = db.execute(
         'SELECT * FROM enquiry ORDER BY created_at DESC LIMIT 5'
     ).fetchall()
 
     return render_template('admin_dashboard.html',
-                            total_students=total_students,
                             total_materials=total_materials,
                             total_feedbacks=total_feedbacks,
                             total_enquiries=total_enquiries,
+                            total_photos=total_photos,
                             recent_feedbacks=recent_feedbacks,
                             recent_enquiries=recent_enquiries)
 
@@ -498,86 +446,38 @@ def delete_material(material_id):
 @admin_required
 def admin_feedbacks():
     db = get_db()
-    feedbacks = db.execute('''
-        SELECT feedback.*, user.name AS user_name, user.email AS user_email
-        FROM feedback
-        JOIN user ON feedback.user_id = user.id
-        ORDER BY feedback.created_at DESC
-    ''').fetchall()
+    feedbacks = db.execute('SELECT * FROM feedback ORDER BY created_at DESC').fetchall()
     return render_template('admin_feedbacks.html', feedbacks=feedbacks)
 
 
-@app.route('/admin/students')
+@app.route('/admin/feedbacks/export')
 @admin_required
-def admin_students():
+def export_feedbacks():
     db = get_db()
-    students = db.execute(
-        'SELECT * FROM user WHERE is_admin = 0 ORDER BY created_at DESC'
-    ).fetchall()
-    return render_template('admin_students.html', students=students)
+    feedbacks = db.execute('SELECT * FROM feedback ORDER BY created_at DESC').fetchall()
 
-
-@app.route('/admin/students/export')
-@admin_required
-def export_students():
-    db = get_db()
-    students = db.execute(
-        'SELECT * FROM user WHERE is_admin = 0 ORDER BY created_at DESC'
-    ).fetchall()
-
-    headers = ['Name', 'Email', 'Phone', 'Course', 'Batch', 'Fees Status', 'Address', 'Notes', 'Joined On']
+    headers = ['Name', 'Subject', 'Rating', 'Message', 'Submitted On']
     rows = []
-    for s in students:
+    for fb in feedbacks:
         rows.append([
-            s['name'], s['email'], s['phone'] or '', s['course'] or '',
-            s['batch'] or '', s['fees_status'] or '', s['address'] or '',
-            s['notes'] or '', fmtdate(s['created_at'], '%d %b %Y')
+            fb['name'], fb['subject'] or '', fb['rating'] or '',
+            fb['message'], fmtdate(fb['created_at'])
         ])
 
-    buf = build_excel(headers, rows, sheet_title='Students')
-    filename = f"students_{datetime.utcnow().strftime('%Y%m%d')}.xlsx"
+    buf = build_excel(headers, rows, sheet_title='Feedback')
+    filename = f"feedback_{datetime.utcnow().strftime('%Y%m%d')}.xlsx"
     return send_file(buf, as_attachment=True, download_name=filename,
                       mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
-@app.route('/admin/students/edit/<int:student_id>', methods=['GET', 'POST'])
+@app.route('/admin/feedbacks/delete/<int:feedback_id>', methods=['POST'])
 @admin_required
-def edit_student(student_id):
+def delete_feedback(feedback_id):
     db = get_db()
-    student = db.execute('SELECT * FROM user WHERE id = ? AND is_admin = 0', (student_id,)).fetchone()
-    if not student:
-        abort(404)
-
-    if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        phone = request.form.get('phone', '').strip()
-        course = request.form.get('course', '').strip()
-        batch = request.form.get('batch', '').strip()
-        fees_status = request.form.get('fees_status', '').strip()
-        address = request.form.get('address', '').strip()
-        notes = request.form.get('notes', '').strip()
-        new_password = request.form.get('new_password', '').strip()
-
-        if not name:
-            flash('Name is required.', 'error')
-            return redirect(url_for('edit_student', student_id=student_id))
-
-        if new_password:
-            password_hash = generate_password_hash(new_password)
-            db.execute(
-                'UPDATE user SET name=?, phone=?, course=?, batch=?, fees_status=?, address=?, notes=?, password_hash=? WHERE id=?',
-                (name, phone, course, batch, fees_status, address, notes, password_hash, student_id)
-            )
-        else:
-            db.execute(
-                'UPDATE user SET name=?, phone=?, course=?, batch=?, fees_status=?, address=?, notes=? WHERE id=?',
-                (name, phone, course, batch, fees_status, address, notes, student_id)
-            )
-        db.commit()
-        flash('Student profile updated successfully.', 'success')
-        return redirect(url_for('admin_students'))
-
-    return render_template('admin_edit_student.html', student=student)
+    db.execute('DELETE FROM feedback WHERE id = ?', (feedback_id,))
+    db.commit()
+    flash('Feedback deleted.', 'success')
+    return redirect(url_for('admin_feedbacks'))
 
 
 @app.route('/admin/enquiries')
@@ -618,6 +518,66 @@ def delete_enquiry(enquiry_id):
     return redirect(url_for('admin_enquiries'))
 
 
+@app.route('/admin/photos', methods=['GET', 'POST'])
+@admin_required
+def admin_photos():
+    db = get_db()
+
+    if request.method == 'POST':
+        category = request.form.get('category', '').strip()
+        title = request.form.get('title', '').strip()
+        file = request.files.get('photo')
+
+        if category not in PHOTO_CATEGORIES:
+            flash('Invalid category.', 'error')
+            return redirect(url_for('admin_photos'))
+
+        if not file or file.filename == '':
+            flash('Please select a photo to upload.', 'error')
+            return redirect(url_for('admin_photos'))
+
+        if not allowed_image_file(file.filename):
+            flash('Only image files (png, jpg, jpeg, webp) are allowed.', 'error')
+            return redirect(url_for('admin_photos'))
+
+        original_filename = secure_filename(file.filename)
+        filename = f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{original_filename}"
+        file.save(os.path.join(app.config['PHOTO_FOLDER'], filename))
+
+        db.execute(
+            'INSERT INTO photo (category, title, filename, uploaded_at) VALUES (?, ?, ?, ?)',
+            (category, title, filename, now_str())
+        )
+        db.commit()
+        flash('Photo uploaded successfully.', 'success')
+        return redirect(url_for('admin_photos'))
+
+    photos = db.execute('SELECT * FROM photo ORDER BY category, uploaded_at DESC').fetchall()
+    grouped = {}
+    for p in photos:
+        grouped.setdefault(p['category'], []).append(p)
+
+    return render_template('admin_photos.html', grouped=grouped, categories=PHOTO_CATEGORIES)
+
+
+@app.route('/admin/photos/delete/<int:photo_id>', methods=['POST'])
+@admin_required
+def delete_photo(photo_id):
+    db = get_db()
+    photo = db.execute('SELECT * FROM photo WHERE id = ?', (photo_id,)).fetchone()
+    if not photo:
+        abort(404)
+
+    file_path = os.path.join(app.config['PHOTO_FOLDER'], photo['filename'])
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    db.execute('DELETE FROM photo WHERE id = ?', (photo_id,))
+    db.commit()
+    flash('Photo deleted.', 'success')
+    return redirect(url_for('admin_photos'))
+
+
 # ===================== ERROR HANDLERS =====================
 
 @app.errorhandler(403)
@@ -643,9 +603,9 @@ def ensure_db_ready():
     if not existing:
         password_hash = generate_password_hash('admin123')
         db.execute(
-            'INSERT INTO user (name, email, phone, password_hash, is_admin, course, created_at) '
-            'VALUES (?, ?, ?, ?, 1, ?, ?)',
-            ('Admin', admin_email, '', password_hash, 'Admin', now_str())
+            'INSERT INTO user (name, email, phone, password_hash, is_admin, created_at) '
+            'VALUES (?, ?, ?, ?, 1, ?)',
+            ('Admin', admin_email, '', password_hash, now_str())
         )
         db.commit()
     db.close()

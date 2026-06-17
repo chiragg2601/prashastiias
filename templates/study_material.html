@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Material | Prashasti IAS Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/study_material.css') }}">
+</head>
+<body>
+
+<!-- ===== Top Bar ===== -->
+<div class="top-bar">
+  <div class="container top-bar-inner">
+    <div class="top-bar-left">
+      <span>📍 187, 2nd Floor, Mohan Puri Road, Near Meghdoot Chowraha, Meerut</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="tel:+919759115116">📞 +91-9759115116</a>
+      <a href="tel:+919654050609">📞 +91-9654050609</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Header / Nav ===== -->
+<header class="navbar">
+  <div class="container nav-inner">
+    <a href="{{ url_for('home') }}" class="logo">
+      <span class="logo-mark">अ</span>
+      <div class="logo-text">
+        <span class="logo-title">Prashasti IAS</span>
+        <span class="logo-sub">Academy &mdash; Meerut</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('home') }}#about">About</a>
+      <a href="{{ url_for('home') }}#courses">Courses</a>
+      <a href="{{ url_for('study_material_page') }}" style="color: var(--color-maroon); font-weight:600;">Study Material</a>
+      <a href="{{ url_for('home') }}#contact">Contact</a>
+    </nav>
+    <a href="{{ url_for('home') }}#contact" class="btn btn-primary nav-cta">Enquire Now</a>
+  </div>
+</header>
+
+<section class="sm-hero">
+  <div class="container">
+    <p class="hero-eyebrow" style="color: var(--color-gold-light);">Free Resources</p>
+    <h1>Study Material</h1>
+    <p>UPSC &amp; UP-PCS preparation ke liye notes, syllabus aur reference links &mdash; sabke liye free.</p>
+  </div>
+</section>
+
+<section class="sm-content">
+  <div class="container">
+    {% if categories %}
+      {% for category, materials in categories.items() %}
+        <div class="material-category">
+          <h3>{{ category }}</h3>
+          <div class="material-list">
+            {% for m in materials %}
+              <div class="material-card">
+                <div class="material-info">
+                  <div class="material-icon">{{ '📄' if m.material_type == 'file' else '🔗' }}</div>
+                  <div>
+                    <h4>{{ m.title }}</h4>
+                    {% if m.description %}<p>{{ m.description }}</p>{% endif %}
+                  </div>
+                </div>
+                <div class="material-actions">
+                  {% if m.material_type == 'file' %}
+                    <a href="{{ url_for('download_material', material_id=m.id) }}">Download</a>
+                  {% else %}
+                    <a href="{{ m.link_url }}" target="_blank" rel="noopener">Open Link</a>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">📚</div>
+        <p>Abhi tak koi study material upload nahi hua hai. Jaldi hi available hoga!</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <div class="logo">
+        <span class="logo-mark">अ</span>
+        <div class="logo-text">
+          <span class="logo-title">Prashasti IAS</span>
+          <span class="logo-sub">Academy &mdash; Meerut</span>
+        </div>
+      </div>
+      <p>Achievers' 1st Choice &mdash; Best UPSC &amp; PCS Coaching Institute in Meerut, Uttar Pradesh.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <a href="{{ url_for('home') }}#about">About</a>
+      <a href="{{ url_for('home') }}#courses">Courses</a>
+      <a href="{{ url_for('study_material_page') }}">Study Material</a>
+      <a href="{{ url_for('home') }}#contact">Contact</a>
+    </div>
+    <div class="footer-contact">
+      <h4>Contact</h4>
+      <p>📍 Mohanpuri, Near Meghdoot Chowraha, Meerut</p>
+      <p>📞 +91-9759115116</p>
+      <p>📞 +91-9654050609</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Prashasti IAS Academy. All Rights Reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

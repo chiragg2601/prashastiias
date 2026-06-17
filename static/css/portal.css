@@ -616,3 +616,37 @@ tbody tr:hover{background: var(--color-cream);}
   .portal-hero-image, .portal-about-image{order:-1;}
   .portal-contact-map{min-height: 260px;}
 }
+
+/* ============ Admin Photo Grid ============ */
+.photo-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+.photo-card{
+  background:#fff;
+  border-radius: 10px;
+  overflow:hidden;
+  box-shadow: var(--shadow-soft);
+}
+.photo-card img{
+  width:100%;
+  height: 140px;
+  object-fit:cover;
+  display:block;
+}
+.photo-card-body{
+  padding: 10px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 8px;
+}
+.photo-card-body p{
+  font-size: 0.82rem;
+  color: var(--color-navy);
+  font-weight:500;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}

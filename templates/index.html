@@ -52,16 +52,11 @@
       <a href="#courses">Courses</a>
       <a href="#faculty">Faculty</a>
       <a href="#results">Results</a>
-      <a href="#testimonials">Testimonials</a>
+      <a href="{{ url_for('study_material_page') }}">Study Material</a>
       <a href="#gallery">Gallery</a>
       <a href="#contact">Contact</a>
     </nav>
     <a href="#contact" class="btn btn-primary nav-cta">Enquire Now</a>
-    {% if current_user and not current_user.is_admin %}
-      <a href="{{ url_for('dashboard') }}" class="btn btn-outline nav-cta" style="border-color: var(--color-navy); color: var(--color-navy); padding: 11px 24px; font-size: 0.88rem;">My Dashboard</a>
-    {% elif not current_user %}
-      <a href="{{ url_for('login') }}" class="btn btn-outline nav-cta" style="border-color: var(--color-navy); color: var(--color-navy); padding: 11px 24px; font-size: 0.88rem;">Student Login</a>
-    {% endif %}
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -142,8 +137,11 @@
   <div class="container about-grid">
     <div class="about-visual reveal-left">
       <div class="about-frame">
-        <img src="{{ url_for('static', filename='img/about-academy.jpg') }}" alt="Prashasti IAS Academy" class="about-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <div class="about-img" style="display:none;">🏛️</div>
+        {% if photos.coaching %}
+          <img src="{{ url_for('static', filename='photos/' + photos.coaching[0].filename) }}" alt="Prashasti IAS Academy" class="about-photo">
+        {% else %}
+          <div class="about-img">🏛️</div>
+        {% endif %}
         <div class="about-badge">
           <span class="badge-num">2018</span>
           <span class="badge-text">Foundation Year</span>
@@ -288,30 +286,41 @@
       <h2 class="section-title">Faculty Jo Sirf Padhate Nahi, Margdarshan Karte Hain</h2>
     </div>
     <div class="faculty-grid">
-      <div class="faculty-card reveal" style="--d:0s">
-        <div class="faculty-avatar">👨‍🏫</div>
-        <h3>Faculty Name</h3>
-        <p class="faculty-role">General Studies &amp; Polity</p>
-        <p class="faculty-bio">10+ saal ka teaching experience, hundreds students ko Prelims clear karne mein madad ki hai.</p>
-      </div>
-      <div class="faculty-card reveal" style="--d:0.1s">
-        <div class="faculty-avatar">👩‍🏫</div>
-        <h3>Faculty Name</h3>
-        <p class="faculty-role">History &amp; Culture</p>
-        <p class="faculty-bio">Storytelling style teaching jisse complex topics bhi easily samajh aate hain.</p>
-      </div>
-      <div class="faculty-card reveal" style="--d:0.2s">
-        <div class="faculty-avatar">👨‍🏫</div>
-        <h3>Faculty Name</h3>
-        <p class="faculty-role">Geography &amp; Environment</p>
-        <p class="faculty-bio">Maps aur diagrams ke through visual learning par focus karte hain.</p>
-      </div>
-      <div class="faculty-card reveal" style="--d:0.3s">
-        <div class="faculty-avatar">👩‍🏫</div>
-        <h3>Faculty Name</h3>
-        <p class="faculty-role">Essay &amp; Answer Writing</p>
-        <p class="faculty-bio">Mains stage ke liye structured answer-writing techniques sikhate hain.</p>
-      </div>
+      {% if photos.faculty %}
+        {% for p in photos.faculty %}
+          <div class="faculty-card reveal" style="--d:{{ loop.index0 * 0.1 }}s">
+            <div class="faculty-avatar faculty-avatar-photo">
+              <img src="{{ url_for('static', filename='photos/' + p.filename) }}" alt="{{ p.title or 'Faculty' }}">
+            </div>
+            <h3>{{ p.title or 'Faculty Member' }}</h3>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="faculty-card reveal" style="--d:0s">
+          <div class="faculty-avatar">👨‍🏫</div>
+          <h3>Faculty Name</h3>
+          <p class="faculty-role">General Studies &amp; Polity</p>
+          <p class="faculty-bio">10+ saal ka teaching experience, hundreds students ko Prelims clear karne mein madad ki hai.</p>
+        </div>
+        <div class="faculty-card reveal" style="--d:0.1s">
+          <div class="faculty-avatar">👩‍🏫</div>
+          <h3>Faculty Name</h3>
+          <p class="faculty-role">History &amp; Culture</p>
+          <p class="faculty-bio">Storytelling style teaching jisse complex topics bhi easily samajh aate hain.</p>
+        </div>
+        <div class="faculty-card reveal" style="--d:0.2s">
+          <div class="faculty-avatar">👨‍🏫</div>
+          <h3>Faculty Name</h3>
+          <p class="faculty-role">Geography &amp; Environment</p>
+          <p class="faculty-bio">Maps aur diagrams ke through visual learning par focus karte hain.</p>
+        </div>
+        <div class="faculty-card reveal" style="--d:0.3s">
+          <div class="faculty-avatar">👩‍🏫</div>
+          <h3>Faculty Name</h3>
+          <p class="faculty-role">Essay &amp; Answer Writing</p>
+          <p class="faculty-bio">Mains stage ke liye structured answer-writing techniques sikhate hain.</p>
+        </div>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -326,19 +335,31 @@
     </div>
     <div class="results-grid">
       <div class="result-card reveal" style="--d:0s">
-        <div class="result-photo">🎓</div>
+        {% if photos.students|length > 0 %}
+          <div class="result-photo result-photo-img"><img src="{{ url_for('static', filename='photos/' + photos.students[0].filename) }}" alt="Student"></div>
+        {% else %}
+          <div class="result-photo">🎓</div>
+        {% endif %}
         <h3>Student Name</h3>
         <p class="result-rank">UP-PCS &mdash; Selected</p>
         <p class="result-quote">"Prashasti IAS ki guidance ne meri taiyari ko ek nayi direction di."</p>
       </div>
       <div class="result-card reveal" style="--d:0.1s">
-        <div class="result-photo">🎓</div>
+        {% if photos.students|length > 1 %}
+          <div class="result-photo result-photo-img"><img src="{{ url_for('static', filename='photos/' + photos.students[1].filename) }}" alt="Student"></div>
+        {% else %}
+          <div class="result-photo">🎓</div>
+        {% endif %}
         <h3>Student Name</h3>
         <p class="result-rank">UPSC CSE &mdash; Mains Qualified</p>
         <p class="result-quote">"Test series aur answer writing practice ne mera confidence badhaya."</p>
       </div>
       <div class="result-card reveal" style="--d:0.2s">
-        <div class="result-photo">🎓</div>
+        {% if photos.students|length > 2 %}
+          <div class="result-photo result-photo-img"><img src="{{ url_for('static', filename='photos/' + photos.students[2].filename) }}" alt="Student"></div>
+        {% else %}
+          <div class="result-photo">🎓</div>
+        {% endif %}
         <h3>Student Name</h3>
         <p class="result-rank">UP-PCS &mdash; Selected</p>
         <p class="result-quote">"Faculty ka personal attention sabse alag experience tha."</p>
@@ -395,6 +416,27 @@
       </div>
       <div class="testi-dots" id="testiDots"></div>
     </div>
+
+    <div class="feedback-form-wrap reveal">
+      <h3>Apna Feedback Share Karein</h3>
+      <p>Aapka experience hamare liye important hai &mdash; bina login ke feedback de sakte hain.</p>
+      <form class="feedback-public-form" id="feedbackForm">
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="text" name="subject" placeholder="Subject (optional)">
+        </div>
+        <div class="rating-row" id="ratingRow">
+          <span>Rating:</span>
+          <input type="hidden" name="rating" id="ratingInput" value="5">
+          <div class="star-select" id="starSelect">
+            <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
+          </div>
+        </div>
+        <textarea name="message" placeholder="Your feedback..." rows="3" required></textarea>
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        <p class="form-success" id="feedbackSuccess">Thank you! Aapka feedback humein mil gaya hai.</p>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -406,12 +448,20 @@
       <h2 class="section-title">Life At Prashasti IAS Academy</h2>
     </div>
     <div class="gallery-grid">
-      <div class="gallery-item reveal" style="--d:0s">📚</div>
-      <div class="gallery-item reveal big" style="--d:0.1s">🏫</div>
-      <div class="gallery-item reveal" style="--d:0.2s">🧑‍🎓</div>
-      <div class="gallery-item reveal" style="--d:0.1s">📝</div>
-      <div class="gallery-item reveal big" style="--d:0.2s">🏆</div>
-      <div class="gallery-item reveal" style="--d:0.3s">👥</div>
+      {% if photos.gallery %}
+        {% for p in photos.gallery %}
+          <div class="gallery-item reveal {{ 'big' if loop.index0 in [1, 4] else '' }}" style="--d:{{ (loop.index0 % 4) * 0.1 }}s">
+            <img src="{{ url_for('static', filename='photos/' + p.filename) }}" alt="{{ p.title or 'Gallery' }}">
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="gallery-item reveal" style="--d:0s">📚</div>
+        <div class="gallery-item reveal big" style="--d:0.1s">🏫</div>
+        <div class="gallery-item reveal" style="--d:0.2s">🧑‍🎓</div>
+        <div class="gallery-item reveal" style="--d:0.1s">📝</div>
+        <div class="gallery-item reveal big" style="--d:0.2s">🏆</div>
+        <div class="gallery-item reveal" style="--d:0.3s">👥</div>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -501,12 +551,8 @@
       <a href="#courses">Courses</a>
       <a href="#faculty">Faculty</a>
       <a href="#results">Results</a>
+      <a href="{{ url_for('study_material_page') }}">Study Material</a>
       <a href="#contact">Contact</a>
-      {% if current_user and not current_user.is_admin %}
-        <a href="{{ url_for('dashboard') }}">My Dashboard</a>
-      {% elif not current_user %}
-        <a href="{{ url_for('login') }}">Student Login</a>
-      {% endif %}
     </div>
     <div class="footer-contact">
       <h4>Contact</h4>

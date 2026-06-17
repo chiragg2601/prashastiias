@@ -1,0 +1,80 @@
+/* ============ Study Material Hero ============ */
+.sm-hero{
+  background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-light) 60%, var(--color-maroon) 130%);
+  color: var(--color-cream);
+  padding: 70px 0 60px;
+  text-align:center;
+}
+.sm-hero h1{
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 10px 0 14px;
+}
+.sm-hero p{
+  color: rgba(250,246,238,0.85);
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ============ Study Material Content ============ */
+.sm-content{
+  padding: 70px 0 90px;
+  background: var(--color-cream-dark);
+}
+
+.material-category{margin-bottom: 40px;}
+.material-category h3{
+  font-family: var(--font-display);
+  color: var(--color-navy);
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-gold);
+  display:inline-block;
+}
+.material-list{display:flex; flex-direction:column; gap: 14px;}
+.material-card{
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px 26px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 16px;
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+  flex-wrap:wrap;
+}
+.material-card:hover{transform: translateY(-3px);}
+.material-info{display:flex; align-items:flex-start; gap: 16px;}
+.material-icon{
+  width:48px; height:48px;
+  border-radius:50%;
+  background: var(--color-cream-dark);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 1.4rem;
+  flex-shrink:0;
+}
+.material-info h4{font-size: 1.05rem; color: var(--color-navy); font-family: var(--font-display);}
+.material-info p{font-size: 0.88rem; color: var(--color-muted); margin-top:2px;}
+.material-actions a{
+  font-size: 0.88rem;
+  font-weight:600;
+  color: var(--color-maroon);
+  padding: 10px 22px;
+  border: 1.5px solid var(--color-maroon);
+  border-radius: 999px;
+  transition: var(--transition);
+  white-space:nowrap;
+}
+.material-actions a:hover{background: var(--color-maroon); color:#fff;}
+
+.empty-state{
+  text-align:center;
+  padding: 60px 20px;
+  color: var(--color-muted);
+  background:#fff;
+  border-radius: var(--radius);
+}
+.empty-state .icon{font-size: 2.6rem; margin-bottom: 14px;}
