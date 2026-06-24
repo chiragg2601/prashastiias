@@ -450,7 +450,7 @@
     <div class="gallery-grid">
       {% if photos.gallery %}
         {% for p in photos.gallery %}
-          <div class="gallery-item reveal {{ 'big' if loop.index0 in [1, 4] else '' }}" style="--d:{{ (loop.index0 % 4) * 0.1 }}s">
+          <div class="gallery-item reveal" style="--d:{{ (loop.index0 % 4) * 0.1 }}s">
             <img src="{{ url_for('static', filename='photos/' + p.filename) }}" alt="{{ p.title or 'Gallery' }}">
           </div>
         {% endfor %}
