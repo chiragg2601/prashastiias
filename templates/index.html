@@ -140,7 +140,7 @@
         {% if photos.coaching %}
           <img src="{{ url_for('static', filename='photos/' + photos.coaching[0].filename) }}" alt="Prashasti IAS Academy" class="about-photo">
         {% else %}
-          <div class="about-img">🏛️</div>
+          <img src="{{ url_for('static', filename='photos/coaching_classroom.jpg') }}" alt="Prashasti IAS Academy Classroom" class="about-photo">
         {% endif %}
         <div class="about-badge">
           <span class="badge-num">2018</span>
@@ -333,37 +333,12 @@
       <h2 class="section-title">Selections &amp; Success Stories</h2>
       <p class="section-desc">Hamare students ki mehnat aur hamari guidance ka result &mdash; har saal naye achievers.</p>
     </div>
-    <div class="results-grid">
-      <div class="result-card reveal" style="--d:0s">
-        {% if photos.students|length > 0 %}
-          <div class="result-photo result-photo-img"><img src="{{ url_for('static', filename='photos/' + photos.students[0].filename) }}" alt="Student"></div>
-        {% else %}
-          <div class="result-photo">🎓</div>
-        {% endif %}
-        <h3>Student Name</h3>
-        <p class="result-rank">UP-PCS &mdash; Selected</p>
-        <p class="result-quote">"Prashasti IAS ki guidance ne meri taiyari ko ek nayi direction di."</p>
-      </div>
-      <div class="result-card reveal" style="--d:0.1s">
-        {% if photos.students|length > 1 %}
-          <div class="result-photo result-photo-img"><img src="{{ url_for('static', filename='photos/' + photos.students[1].filename) }}" alt="Student"></div>
-        {% else %}
-          <div class="result-photo">🎓</div>
-        {% endif %}
-        <h3>Student Name</h3>
-        <p class="result-rank">UPSC CSE &mdash; Mains Qualified</p>
-        <p class="result-quote">"Test series aur answer writing practice ne mera confidence badhaya."</p>
-      </div>
-      <div class="result-card reveal" style="--d:0.2s">
-        {% if photos.students|length > 2 %}
-          <div class="result-photo result-photo-img"><img src="{{ url_for('static', filename='photos/' + photos.students[2].filename) }}" alt="Student"></div>
-        {% else %}
-          <div class="result-photo">🎓</div>
-        {% endif %}
-        <h3>Student Name</h3>
-        <p class="result-rank">UP-PCS &mdash; Selected</p>
-        <p class="result-quote">"Faculty ka personal attention sabse alag experience tha."</p>
-      </div>
+    <div class="results-board reveal">
+      {% if photos.students %}
+        <img src="{{ url_for('static', filename='photos/' + photos.students[0].filename) }}" alt="Prashasti IAS Results">
+      {% else %}
+        <img src="{{ url_for('static', filename='photos/students_results_board.jpg') }}" alt="Prashasti IAS Academy Results">
+      {% endif %}
     </div>
     <div class="results-cta reveal">
       <a href="#contact" class="btn btn-primary">Join The Next Batch Of Achievers</a>
@@ -455,12 +430,24 @@
           </div>
         {% endfor %}
       {% else %}
-        <div class="gallery-item reveal" style="--d:0s">📚</div>
-        <div class="gallery-item reveal big" style="--d:0.1s">🏫</div>
-        <div class="gallery-item reveal" style="--d:0.2s">🧑‍🎓</div>
-        <div class="gallery-item reveal" style="--d:0.1s">📝</div>
-        <div class="gallery-item reveal big" style="--d:0.2s">🏆</div>
-        <div class="gallery-item reveal" style="--d:0.3s">👥</div>
+        <div class="gallery-item reveal" style="--d:0s">
+          <img src="{{ url_for('static', filename='photos/gallery_foundation_day_1.jpg') }}" alt="Foundation Day">
+        </div>
+        <div class="gallery-item reveal" style="--d:0.1s">
+          <img src="{{ url_for('static', filename='photos/gallery_building_night.jpg') }}" alt="Academy Building">
+        </div>
+        <div class="gallery-item reveal" style="--d:0.2s">
+          <img src="{{ url_for('static', filename='photos/gallery_foundation_day_2.jpg') }}" alt="Students Group">
+        </div>
+        <div class="gallery-item reveal" style="--d:0.1s">
+          <img src="{{ url_for('static', filename='photos/gallery_classroom_interior.jpg') }}" alt="Classroom">
+        </div>
+        <div class="gallery-item reveal" style="--d:0.2s">
+          <img src="{{ url_for('static', filename='photos/gallery_signboard.jpg') }}" alt="Prashasti IAS Signboard">
+        </div>
+        <div class="gallery-item reveal" style="--d:0.3s">
+          <img src="{{ url_for('static', filename='photos/gallery_banner.jpg') }}" alt="Academy Banner">
+        </div>
       {% endif %}
     </div>
   </div>

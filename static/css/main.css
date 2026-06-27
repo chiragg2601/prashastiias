@@ -1098,3 +1098,16 @@ ul{list-style:none;}
   transition: color .15s;
 }
 .star-select span.active{color: var(--color-gold);}
+
+/* ============ Results Board ============ */
+.results-board{
+  max-width: 900px;
+  margin: 0 auto 40px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.results-board img{
+  width: 100%;
+  display: block;
+}
