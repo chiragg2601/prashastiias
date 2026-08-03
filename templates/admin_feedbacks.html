@@ -6,7 +6,7 @@
   <div>
     <p class="eyebrow">Admin Panel</p>
     <h1>Website Feedback</h1>
-    <p>Visitors dwara diya gaya feedback yahan dekhein.</p>
+    <p>View feedback submitted by visitors here.</p>
   </div>
   <a href="{{ url_for('export_feedbacks') }}" class="btn btn-primary">⬇ Export to Excel</a>
 </div>
@@ -39,7 +39,7 @@
             </td>
           </tr>
         {% else %}
-          <tr><td colspan="6" style="text-align:center; color: var(--color-muted);">Abhi tak koi feedback nahi mila hai.</td></tr>
+          <tr><td colspan="6" style="text-align:center; color: var(--color-muted);">No feedback received yet.</td></tr>
         {% endfor %}
       </tbody>
     </table>

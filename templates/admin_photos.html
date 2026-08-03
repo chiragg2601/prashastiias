@@ -5,7 +5,7 @@
 <div class="page-head">
   <p class="eyebrow">Admin Panel</p>
   <h1>Photos</h1>
-  <p>Category-wise photos upload karein &mdash; yeh website ke About, Faculty aur Gallery sections mein dikhengi.</p>
+  <p>Upload photos category-wise &mdash; these will appear in the website's About, Faculty, and Gallery sections.</p>
 </div>
 
 <div class="admin-form-grid">
@@ -37,9 +37,9 @@
 
   <div class="form-card">
     <h3>Categories Explained</h3>
-    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom: 10px;"><strong>Coaching</strong> &mdash; About section ki main photo (academy/building).</p>
-    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom: 10px;"><strong>Faculty</strong> &mdash; Teachers ki photos, Faculty section mein dikhengi.</p>
-    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom: 10px;"><strong>Students &amp; Results</strong> &mdash; Successful students ki photos.</p>
+    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom: 10px;"><strong>Coaching</strong> &mdash; main photo for the About section (academy/building).</p>
+    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom: 10px;"><strong>Faculty</strong> &mdash; teacher photos, shown in the Faculty section.</p>
+    <p style="color: var(--color-muted); font-size:0.92rem; margin-bottom: 10px;"><strong>Students &amp; Results</strong> &mdash; photos of successful students.</p>
     <p style="color: var(--color-muted); font-size:0.92rem;"><strong>Gallery</strong> &mdash; General academy life photos.</p>
   </div>
 </div>
@@ -62,7 +62,7 @@
         {% endfor %}
       </div>
     {% else %}
-      <p style="color: var(--color-muted); font-size: 0.9rem;">Is category mein abhi koi photo nahi hai.</p>
+      <p style="color: var(--color-muted); font-size: 0.9rem;">No photos in this category yet.</p>
     {% endif %}
   </div>
 {% endfor %}

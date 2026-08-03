@@ -102,6 +102,46 @@ function nextTesti() {
 
 setInterval(nextTesti, 5000);
 
+// ===== Gallery Slider =====
+const galleryTrack = document.getElementById('galleryTrack');
+if (galleryTrack) {
+  const galleryDotsContainer = document.getElementById('galleryDots');
+  const gallerySlides = galleryTrack.querySelectorAll('.gallery-slide');
+  const galleryPrevBtn = document.getElementById('galleryPrev');
+  const galleryNextBtn = document.getElementById('galleryNext');
+  let currentGallery = 0;
+  let galleryTimer;
+
+  gallerySlides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    if (i === 0) dot.classList.add('active');
+    dot.addEventListener('click', () => { goToGallery(i); resetGalleryTimer(); });
+    galleryDotsContainer.appendChild(dot);
+  });
+
+  const galleryDots = galleryDotsContainer.querySelectorAll('button');
+
+  function goToGallery(index) {
+    currentGallery = (index + gallerySlides.length) % gallerySlides.length;
+    galleryTrack.style.transform = `translateX(-${currentGallery * 100}%)`;
+    galleryDots.forEach((d, i) => d.classList.toggle('active', i === currentGallery));
+  }
+
+  function nextGallery() {
+    goToGallery(currentGallery + 1);
+  }
+
+  function resetGalleryTimer() {
+    clearInterval(galleryTimer);
+    galleryTimer = setInterval(nextGallery, 4000);
+  }
+
+  galleryNextBtn.addEventListener('click', () => { nextGallery(); resetGalleryTimer(); });
+  galleryPrevBtn.addEventListener('click', () => { goToGallery(currentGallery - 1); resetGalleryTimer(); });
+
+  resetGalleryTimer();
+}
+
 // ===== Contact Form =====
 const contactForm = document.getElementById('contactForm');
 const formSuccess = document.getElementById('formSuccess');

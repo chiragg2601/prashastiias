@@ -200,9 +200,9 @@ def fmtdate(value, fmt='%d %b %Y, %I:%M %p'):
 def home():
     photos = {
         'coaching': get_photos_by_category('Coaching', limit=1),
-        'faculty': get_photos_by_category('Faculty', limit=4),
+        'faculty': get_photos_by_category('Faculty', limit=1),
         'students': get_photos_by_category('Students & Results', limit=3),
-        'gallery': get_photos_by_category('Gallery', limit=6),
+        'gallery': get_photos_by_category('Gallery', limit=20),
     }
     return render_template('index.html', photos=photos)
 

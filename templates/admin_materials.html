@@ -5,7 +5,7 @@
 <div class="page-head">
   <p class="eyebrow">Admin Panel</p>
   <h1>Study Material</h1>
-  <p>Naya study material upload karein ya existing material manage karein.</p>
+  <p>Upload new study material or manage existing material.</p>
 </div>
 
 <div class="admin-form-grid">
@@ -63,8 +63,8 @@
       Total materials uploaded: <strong>{{ materials|length }}</strong>
     </p>
     <p style="color: var(--color-muted); font-size:0.92rem;">
-      Students apne dashboard se yeh materials category-wise dekh sakte hain aur PDF files
-      download kar sakte hain ya links open kar sakte hain.
+      Students can view these materials category-wise on their dashboard and
+      can download files or open links.
     </p>
   </div>
 </div>
@@ -104,7 +104,7 @@
             </td>
           </tr>
         {% else %}
-          <tr><td colspan="5" style="text-align:center; color: var(--color-muted);">Koi material upload nahi hua hai.</td></tr>
+          <tr><td colspan="5" style="text-align:center; color: var(--color-muted);">No material has been uploaded yet.</td></tr>
         {% endfor %}
       </tbody>
     </table>
