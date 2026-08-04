@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@
 <header class="navbar">
   <div class="container nav-inner">
     <a href="{{ url_for('home') }}" class="logo">
-      <span class="logo-mark">अ</span>
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Prashasti IAS Academy" class="logo-mark-img">
       <div class="logo-text">
         <span class="logo-title">Prashasti IAS</span>
         <span class="logo-sub">Academy &mdash; Meerut</span>
@@ -97,13 +97,13 @@
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <div class="logo">
-        <span class="logo-mark">अ</span>
+      <a href="{{ url_for('home') }}" class="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Prashasti IAS Academy" class="logo-mark-img">
         <div class="logo-text">
           <span class="logo-title">Prashasti IAS</span>
           <span class="logo-sub">Academy &mdash; Meerut</span>
         </div>
-      </div>
+      </a>
       <p>Achievers' 1st Choice &mdash; Best UPSC &amp; PCS Coaching Institute in Meerut, Uttar Pradesh.</p>
     </div>
     <div class="footer-links">
