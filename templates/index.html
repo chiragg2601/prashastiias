@@ -293,22 +293,26 @@
     </div>
     <div class="faculty-grid faculty-grid-single">
       {% if photos.faculty %}
-        <div class="faculty-card faculty-card-spotlight reveal" style="--d:0s">
-          <div class="faculty-avatar faculty-avatar-photo">
+        <div class="faculty-card faculty-card-full reveal" style="--d:0s">
+          <div class="faculty-photo-full">
             <img src="{{ url_for('static', filename='photos/' + photos.faculty[0].filename) }}" alt="Abhishek Singh">
           </div>
-          <h3>Abhishek Singh</h3>
-          <p class="faculty-role">General Studies &amp; Polity</p>
-          <p class="faculty-bio">Over 10 years of teaching experience, having helped hundreds of students clear the Prelims.</p>
+          <div class="faculty-info">
+            <h3>Abhishek Singh</h3>
+            <p class="faculty-role">General Studies &amp; Polity</p>
+            <p class="faculty-bio">Over 10 years of teaching experience, having helped hundreds of students clear the Prelims.</p>
+          </div>
         </div>
       {% else %}
-        <div class="faculty-card faculty-card-spotlight reveal" style="--d:0s">
-          <div class="faculty-avatar faculty-avatar-photo">
-            <img src="{{ url_for('static', filename='photos/faculty_abhishek_singh.jpg') }}" alt="Abhishek Singh">
+        <div class="faculty-card faculty-card-full reveal" style="--d:0s">
+          <div class="faculty-photo-full">
+            <img src="{{ url_for('static', filename='photos/faculty_abhishek_singh_full.jpg') }}" alt="Abhishek Singh">
           </div>
-          <h3>Abhishek Singh</h3>
-          <p class="faculty-role">General Studies &amp; Polity</p>
-          <p class="faculty-bio">Over 10 years of teaching experience, having helped hundreds of students clear the Prelims.</p>
+          <div class="faculty-info">
+            <h3>Abhishek Singh</h3>
+            <p class="faculty-role">General Studies &amp; Polity</p>
+            <p class="faculty-bio">Over 10 years of teaching experience, having helped hundreds of students clear the Prelims.</p>
+          </div>
         </div>
       {% endif %}
     </div>

@@ -207,6 +207,40 @@ def home():
     return render_template('index.html', photos=photos)
 
 
+@app.route('/robots.txt')
+def robots_txt():
+    lines = [
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /admin',
+        'Disallow: /login',
+        'Disallow: /profile',
+        'Disallow: /material/download/',
+        '',
+        f"Sitemap: {request.url_root.rstrip('/')}/sitemap.xml",
+    ]
+    return '\n'.join(lines), 200, {'Content-Type': 'text/plain; charset=utf-8'}
+
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    base = request.url_root.rstrip('/')
+    today = datetime.utcnow().strftime('%Y-%m-%d')
+    pages = [
+        {'loc': f'{base}/', 'priority': '1.0', 'changefreq': 'weekly'},
+        {'loc': f'{base}/study-material', 'priority': '0.8', 'changefreq': 'weekly'},
+    ]
+    xml_parts = ['<?xml version="1.0" encoding="UTF-8"?>',
+                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for p in pages:
+        xml_parts.append(
+            f"  <url><loc>{p['loc']}</loc><lastmod>{today}</lastmod>"
+            f"<changefreq>{p['changefreq']}</changefreq><priority>{p['priority']}</priority></url>"
+        )
+    xml_parts.append('</urlset>')
+    return '\n'.join(xml_parts), 200, {'Content-Type': 'application/xml; charset=utf-8'}
+
+
 @app.route('/enquiry', methods=['POST'])
 def submit_enquiry():
     name = request.form.get('name', '').strip()
