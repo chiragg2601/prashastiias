@@ -624,8 +624,44 @@ ul{list-style:none;}
 }
 .faculty-grid-single{
   grid-template-columns: 1fr;
-  max-width: 320px;
+  max-width: 340px;
   margin: 0 auto;
+}
+.faculty-card-spotlight{
+  padding: 44px 28px 36px;
+  position: relative;
+  border: 1px solid rgba(183,36,20,0.08);
+}
+.faculty-card-spotlight::before{
+  content:"";
+  position:absolute;
+  top:0; left:50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-maroon));
+}
+.faculty-card-spotlight .faculty-avatar{
+  width: 132px; height:132px;
+  margin: 0 auto 20px;
+  padding: 5px;
+  background: linear-gradient(135deg, var(--color-gold), var(--color-maroon));
+}
+.faculty-card-spotlight .faculty-avatar-photo img{
+  border-radius:50%;
+  border: 3px solid #fff;
+}
+.faculty-card-spotlight h3{
+  font-size: 1.3rem;
+  margin-bottom: 2px;
+}
+.faculty-card-spotlight .faculty-role{
+  font-size: 0.88rem;
+  margin: 6px 0 14px;
+}
+.faculty-card-spotlight .faculty-bio{
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 .faculty-card{
   text-align:center;
