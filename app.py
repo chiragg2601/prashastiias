@@ -207,6 +207,15 @@ def home():
     return render_template('index.html', photos=photos)
 
 
+@app.route('/favicon.ico')
+def favicon_root():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
+
+
 @app.route('/robots.txt')
 def robots_txt():
     lines = [
