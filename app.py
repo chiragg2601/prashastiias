@@ -238,6 +238,7 @@ def sitemap_xml():
     pages = [
         {'loc': f'{base}/', 'priority': '1.0', 'changefreq': 'weekly'},
         {'loc': f'{base}/study-material', 'priority': '0.8', 'changefreq': 'weekly'},
+        {'loc': f'{base}/syllabus', 'priority': '0.8', 'changefreq': 'monthly'},
     ]
     xml_parts = ['<?xml version="1.0" encoding="UTF-8"?>',
                  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
@@ -284,6 +285,11 @@ def study_material_page():
         categories.setdefault(cat, []).append(m)
 
     return render_template('study_material.html', categories=categories)
+
+
+@app.route('/syllabus')
+def syllabus_page():
+    return render_template('syllabus.html')
 
 
 @app.route('/material/download/<int:material_id>')
